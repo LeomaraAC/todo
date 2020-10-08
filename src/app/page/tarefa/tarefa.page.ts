@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {CategoriaService} from '../../core/service/categoria.service';
+import {Categoria} from '../../model/categoria.model';
 
 @Component({
   selector: 'app-tarefa',
@@ -6,10 +8,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./tarefa.page.scss'],
 })
 export class TarefaPage implements OnInit {
+  categorias: Categoria[] = [];
 
-  constructor() { }
+  constructor(private categoriaService: CategoriaService) { }
 
   ngOnInit() {
+    this.categoriaService
+        .buscarTodasCategoriasTarefas()
+        .subscribe(categorias => this.categorias = categorias);
   }
 
 }
