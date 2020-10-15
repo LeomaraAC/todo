@@ -8,3 +8,18 @@
   display: flex;
   justify-content: center;
 }
+
+ion-list {
+  margin-top: 15px;
+  ion-list-header {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  ion-item-option {
+    background: transparent;
+  }
+  .excluir {
+    color: crimson;
+    font-size: 20px;
+  }
+}
