@@ -15,6 +15,16 @@ ion-list {
     font-size: 18px;
     font-weight: bold;
   }
+  ion-item {
+    ion-icon {
+      margin-right: 6px;
+    }
+    .concluido {
+      text-decoration: line-through;
+      text-decoration-color: #7D7D7D;
+      color: #7D7D7D;
+    }
+  }
   ion-item-option {
     background: transparent;
   }
