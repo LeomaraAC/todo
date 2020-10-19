@@ -1,0 +1,29 @@
+<ion-content>
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-label position="floating">Categoria</ion-label>
+      <ion-select interface="popover" formControlName="categoriaId">
+        <ion-select-option [value]="categoria.id" *ngFor="let categoria of categorias">
+          {{categoria.titulo}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Descrição</ion-label>
+      <ion-input formControlName="descricao"></ion-input>
+    </ion-item>
+
+  </form>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="footer">
+      <ion-icon name="close-outline" class="close" (click)="close()"></ion-icon>
+      <button [disabled]="form.invalid" (click)="salvar()">
+        <ion-icon name="save-outline" [class]="{'save': form.valid}"></ion-icon>
+      </button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

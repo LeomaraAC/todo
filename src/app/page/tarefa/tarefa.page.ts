@@ -19,6 +19,10 @@ export class TarefaPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.buscarCategoriasTarefas();
+    this.subs.push(
+        this.tarefaService.tarefaCreatedEv.subscribe(() => this.buscarCategoriasTarefas())
+    );
+  }
 
   ngOnDestroy() {
     this.subs.forEach(item => item.unsubscribe());

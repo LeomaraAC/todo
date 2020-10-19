@@ -1,0 +1,19 @@
+.footer {
+  display: flex;
+  justify-content: space-around;
+  font-size: 30px;
+  button {
+    background: transparent;
+    font-size: 30px;
+  }
+  .close {
+    color: crimson;
+  }
+  .save {
+    color: forestgreen;
+  }
+}
+
+ion-item {
+  margin-top: 15px;
+}

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Tarefa} from '../../model/tarefa.model';
 import {api} from '../utils/global.constants';
 import {HttpClient} from '@angular/common/http';
@@ -8,6 +8,8 @@ import {Observable} from 'rxjs';
   providedIn: 'root'
 })
 export class TarefaService {
+
+  tarefaCreatedEv: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(private http: HttpClient) { }
 
@@ -25,4 +27,7 @@ export class TarefaService {
     return this.http.delete(`${api}/tarefas/${tarefa.id}`);
   }
 
+  salvar(tarefa: Tarefa): Observable<Tarefa> {
+    return this.http.post<Tarefa>(`${api}/tarefas`, tarefa);
+  }
 }

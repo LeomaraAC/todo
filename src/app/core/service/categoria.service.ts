@@ -18,4 +18,11 @@ export class CategoriaService {
   buscarTodasCategoriasTarefas(): Observable<Categoria[]> {
     return this.http.get<Categoria[]>(`${api}/categorias?_embed=tarefas`);
   }
+
+  /**
+   * Retorna todas as categorias
+   */
+  buscarTodasCategorias(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${api}/categorias`);
+  }
 }
