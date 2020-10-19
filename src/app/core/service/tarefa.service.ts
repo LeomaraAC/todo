@@ -17,4 +17,12 @@ export class TarefaService {
   atualizar(tarefa: Tarefa): Observable<Tarefa> {
     return this.http.put<Tarefa>(`${api}/tarefas/${tarefa.id}`, tarefa);
   }
+
+  /**
+   * Remove uma tarefa
+   */
+  excluir(tarefa: Tarefa): Observable<{}> {
+    return this.http.delete(`${api}/tarefas/${tarefa.id}`);
+  }
+
 }

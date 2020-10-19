@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CategoriaService} from '../../core/service/categoria.service';
 import {Categoria} from '../../model/categoria.model';
 import {Tarefa} from '../../model/tarefa.model';
@@ -10,7 +10,7 @@ import {TarefaService} from '../../core/service/tarefa.service';
   templateUrl: './tarefa.page.html',
   styleUrls: ['./tarefa.page.scss'],
 })
-export class TarefaPage implements OnInit {
+export class TarefaPage implements OnInit, OnDestroy {
   categorias: Categoria[] = [];
   subs: Subscription[] = [];
 
@@ -19,6 +19,9 @@ export class TarefaPage implements OnInit {
 
   ngOnInit() {
     this.buscarCategoriasTarefas();
+
+  ngOnDestroy() {
+    this.subs.forEach(item => item.unsubscribe());
   }
 
   /**
@@ -26,7 +29,13 @@ export class TarefaPage implements OnInit {
    * @param tarefa
    */
   excluir(tarefa: Tarefa) {
-    console.log(tarefa);
+    this.subs.push(
+        this.tarefaService.excluir(tarefa).subscribe(() => {
+          this.buscarCategoriasTarefas();
+        }, error => {
+          console.log(error);
+        })
+    );
   }
 
   /**
@@ -51,5 +60,4 @@ export class TarefaPage implements OnInit {
         })
     );
   }
-
 }
