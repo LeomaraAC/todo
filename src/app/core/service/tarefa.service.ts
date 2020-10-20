@@ -9,8 +9,6 @@ import {Observable} from 'rxjs';
 })
 export class TarefaService {
 
-  tarefaCreatedEv: EventEmitter<void> = new EventEmitter<void>();
-
   constructor(private http: HttpClient) { }
 
   /**

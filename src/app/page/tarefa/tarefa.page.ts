@@ -4,6 +4,8 @@ import {Categoria} from '../../model/categoria.model';
 import {Tarefa} from '../../model/tarefa.model';
 import {Subscription} from 'rxjs';
 import {TarefaService} from '../../core/service/tarefa.service';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-tarefa',
@@ -15,17 +17,24 @@ export class TarefaPage implements OnInit, OnDestroy {
   subs: Subscription[] = [];
 
   constructor(private categoriaService: CategoriaService,
-              private tarefaService: TarefaService) { }
+              private tarefaService: TarefaService,
+              private router: Router) { }
 
   ngOnInit() {
-    this.buscarCategoriasTarefas();
     this.subs.push(
-        this.tarefaService.tarefaCreatedEv.subscribe(() => this.buscarCategoriasTarefas())
+        this.router.events
+            .pipe(filter(event => event instanceof NavigationEnd))
+            .subscribe((rota: NavigationEnd) => {
+              if (rota.url === '/tabs/tarefa') {
+                this.buscarCategoriasTarefas();
+              }
+            })
     );
   }
 
   ngOnDestroy() {
     this.subs.forEach(item => item.unsubscribe());
+
   }
 
   /**

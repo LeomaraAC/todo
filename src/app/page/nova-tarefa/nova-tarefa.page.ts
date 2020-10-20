@@ -50,7 +50,6 @@ export class NovaTarefaPage implements OnInit, OnDestroy {
 
     this.subs.push(
         this.tarefaService.salvar(tarefa).subscribe(dados => {
-          this.tarefaService.tarefaCreatedEv.emit();
           this.notificatioService.notification('Tarefa salva com sucesso', 'success');
           this.close();
         }, error => {
