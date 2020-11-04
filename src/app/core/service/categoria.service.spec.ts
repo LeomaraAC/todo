@@ -45,4 +45,8 @@ describe('CategoriaService', () => {
     expect(req.request.method).toBe('GET');
     req.flush(dados);
   });
+
+  afterEach(() => {
+    httpMock.verify();
+  });
 });
