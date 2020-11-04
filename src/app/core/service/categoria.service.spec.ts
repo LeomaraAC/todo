@@ -39,7 +39,7 @@ describe('CategoriaService', () => {
     service.buscarTodasCategoriasTarefas().subscribe(categorias => {
       expect(categorias.length).toBe(dados.length);
       expect(categorias).toEqual(dados);
-    });
+    }, () => fail('Esperado uma lista de categorias ao invés de um erro!'));
 
     const req = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
