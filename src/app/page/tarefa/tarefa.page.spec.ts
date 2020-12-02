@@ -55,4 +55,11 @@ describe('TarefaPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('Deve buscar os dados da categoria', () => {
+    expect(component.categorias).toBe(categoriaFake);
+    expect(component.subs.length).toBe(2);
+    expect(categoriaSpy.buscarTodasCategoriasTarefas.calls.count()).toBe(1);
+  });
+
 });
