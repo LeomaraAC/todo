@@ -21,4 +21,10 @@ describe('CategoriaPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should encontrar ion-title', () => {
+    const el: HTMLElement = fixture.nativeElement;
+    const title = el.querySelector('ion-title');
+    expect(title.textContent).toEqual('categoria');
+  });
 });
