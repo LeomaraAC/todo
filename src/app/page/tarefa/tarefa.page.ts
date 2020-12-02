@@ -25,7 +25,7 @@ export class TarefaPage implements OnInit, OnDestroy {
         this.router.events
             .pipe(filter(event => event instanceof NavigationEnd))
             .subscribe((rota: NavigationEnd) => {
-              if (rota.url === '/tabs/tarefa') {
+              if (rota.url === '/tabs/tarefa' || rota.url === '/') {
                 this.buscarCategoriasTarefas();
               }
             })
