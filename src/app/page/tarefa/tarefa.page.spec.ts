@@ -56,7 +56,7 @@ describe('TarefaPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('Deve buscar os dados da categoria', () => {
+  it('Deve buscar os dados da categoria quando o componente é criado', () => {
     expect(component.categorias).toBe(categoriaFake);
     expect(component.subs.length).toBe(2);
     expect(categoriaSpy.buscarTodasCategoriasTarefas.calls.count()).toBe(1);
