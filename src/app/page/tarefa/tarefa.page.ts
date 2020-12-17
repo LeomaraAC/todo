@@ -6,7 +6,8 @@ import {Subscription} from 'rxjs';
 import {TarefaService} from '../../core/service/tarefa.service';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
-import {AlertController} from '@ionic/angular';
+import {Alert} from '../../core/models/alert.model';
+import {NotificationService} from '../../core/service/notification.service';
 
 @Component({
   selector: 'app-tarefa',
@@ -20,7 +21,7 @@ export class TarefaPage implements OnInit, OnDestroy {
   constructor(private categoriaService: CategoriaService,
               private tarefaService: TarefaService,
               private router: Router,
-              private alertController: AlertController) { }
+              private ntService: NotificationService) { }
 
   ngOnInit() {
     this.subs.push(
@@ -44,30 +45,21 @@ export class TarefaPage implements OnInit, OnDestroy {
    * @param tarefa
    */
   async excluir(tarefa: Tarefa) {
-      const alert = await this.alertController.create({
-          header: 'Excluir!',
-          message: 'Deseja excluir esta tarefa?',
-          buttons: [
-              {
-                  text: 'Cancelar',
-                  role: 'cancel'
-              },
-              {
-                  text: 'Excluir',
-                  handler: () => {
-                      this.subs.push(
-                          this.tarefaService.excluir(tarefa).subscribe(() => {
-                              this.buscarCategoriasTarefas();
-                          }, error => {
-                              console.log(error);
-                          })
-                      );
-                  }
-              }
-          ]
-      });
+      const alert = new Alert();
+      alert.titulo = 'Excluir!';
+      alert.mensagem = 'Deseja excluir esta tarefa?';
+      alert.txtBtnConfirmar = 'Excluir';
+      alert.acaoBtnConfirmar = () => {
+          this.subs.push(
+              this.tarefaService.excluir(tarefa).subscribe(() => {
+                  this.buscarCategoriasTarefas();
+              }, error => {
+                  console.log(error);
+              })
+          );
+      };
 
-      await alert.present();
+      await this.ntService.alertConfirm(alert);
   }
 
   /**
