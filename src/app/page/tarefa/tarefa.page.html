@@ -2,7 +2,6 @@
     <div class="header">
         <img src="../../../assets/icon/logo.png" alt="Logo ToDo" id="logo">
     </div>
-
     <ng-container *ngFor="let categoria of categorias">
         <ion-list *ngIf="categoria.tarefas.length > 0">
             <ion-list-header>
@@ -17,7 +16,7 @@
                 </ion-item>
                 <ion-item-options side="end">
                     <ion-item-option>
-                        <ion-icon name="trash-outline" (click)="excluir(tarefa)" class="excluir"></ion-icon>
+                        <ion-icon name="trash-outline" [id]="'excluir_'+tarefa.id" (click)="excluir(tarefa)" class="excluir"></ion-icon>
                     </ion-item-option>
                 </ion-item-options>
             </ion-item-sliding>
