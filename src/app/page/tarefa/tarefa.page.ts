@@ -6,6 +6,7 @@ import {Subscription} from 'rxjs';
 import {TarefaService} from '../../core/service/tarefa.service';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
+import {AlertController} from '@ionic/angular';
 
 @Component({
   selector: 'app-tarefa',
@@ -18,7 +19,8 @@ export class TarefaPage implements OnInit, OnDestroy {
 
   constructor(private categoriaService: CategoriaService,
               private tarefaService: TarefaService,
-              private router: Router) { }
+              private router: Router,
+              private alertController: AlertController) { }
 
   ngOnInit() {
     this.subs.push(
@@ -41,14 +43,31 @@ export class TarefaPage implements OnInit, OnDestroy {
    * Remove uma tarefa
    * @param tarefa
    */
-  excluir(tarefa: Tarefa) {
-    this.subs.push(
-        this.tarefaService.excluir(tarefa).subscribe(() => {
-          this.buscarCategoriasTarefas();
-        }, error => {
-          console.log(error);
-        })
-    );
+  async excluir(tarefa: Tarefa) {
+      const alert = await this.alertController.create({
+          header: 'Excluir!',
+          message: 'Deseja excluir esta tarefa?',
+          buttons: [
+              {
+                  text: 'Cancelar',
+                  role: 'cancel'
+              },
+              {
+                  text: 'Excluir',
+                  handler: () => {
+                      this.subs.push(
+                          this.tarefaService.excluir(tarefa).subscribe(() => {
+                              this.buscarCategoriasTarefas();
+                          }, error => {
+                              console.log(error);
+                          })
+                      );
+                  }
+              }
+          ]
+      });
+
+      await alert.present();
   }
 
   /**
