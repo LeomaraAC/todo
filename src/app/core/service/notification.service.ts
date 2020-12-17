@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AlertController, ToastController} from '@ionic/angular';
 import {Alert} from '../models/alert.model';
 
@@ -8,7 +8,8 @@ import {Alert} from '../models/alert.model';
 export class NotificationService {
 
   constructor(private toastController: ToastController,
-              private alertController: AlertController) { }
+              private alertController: AlertController) {
+  }
 
   async toast(message: string, color: string = 'dark') {
     const toast = await this.toastController.create({
@@ -19,7 +20,7 @@ export class NotificationService {
     await toast.present();
   }
 
-  async alertConfirm(dados: Alert){
+  async alertConfirm(dados: Alert) {
     const alert = await this.alertController.create({
       header: dados.titulo,
       message: dados.mensagem,

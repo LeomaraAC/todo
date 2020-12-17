@@ -10,78 +10,79 @@ import {Alert} from '../../core/models/alert.model';
 import {NotificationService} from '../../core/service/notification.service';
 
 @Component({
-  selector: 'app-tarefa',
-  templateUrl: './tarefa.page.html',
-  styleUrls: ['./tarefa.page.scss'],
+    selector: 'app-tarefa',
+    templateUrl: './tarefa.page.html',
+    styleUrls: ['./tarefa.page.scss'],
 })
 export class TarefaPage implements OnInit, OnDestroy {
-  categorias: Categoria[] = [];
-  subs: Subscription[] = [];
+    categorias: Categoria[] = [];
+    subs: Subscription[] = [];
 
-  constructor(private categoriaService: CategoriaService,
-              private tarefaService: TarefaService,
-              private router: Router,
-              private ntService: NotificationService) { }
+    constructor(private categoriaService: CategoriaService,
+                private tarefaService: TarefaService,
+                private router: Router,
+                private ntService: NotificationService) {
+    }
 
-  ngOnInit() {
-    this.subs.push(
-        this.router.events
-            .pipe(filter(event => event instanceof NavigationEnd))
-            .subscribe((rota: NavigationEnd) => {
-              if (rota.url === '/tabs/tarefa' || rota.url === '/') {
-                this.buscarCategoriasTarefas();
-              }
+    ngOnInit() {
+        this.subs.push(
+            this.router.events
+                .pipe(filter(event => event instanceof NavigationEnd))
+                .subscribe((rota: NavigationEnd) => {
+                    if (rota.url === '/tabs/tarefa' || rota.url === '/') {
+                        this.buscarCategoriasTarefas();
+                    }
+                })
+        );
+    }
+
+    ngOnDestroy() {
+        this.subs.forEach(item => item.unsubscribe());
+
+    }
+
+    /**
+     * Remove uma tarefa
+     * @param tarefa
+     */
+    async excluir(tarefa: Tarefa) {
+        const alert = new Alert();
+        alert.titulo = 'Excluir!';
+        alert.mensagem = 'Deseja excluir esta tarefa?';
+        alert.txtBtnConfirmar = 'Excluir';
+        alert.acaoBtnConfirmar = () => {
+            this.subs.push(
+                this.tarefaService.excluir(tarefa).subscribe(() => {
+                    this.buscarCategoriasTarefas();
+                }, error => {
+                    console.log(error);
+                })
+            );
+        };
+
+        await this.ntService.alertConfirm(alert);
+    }
+
+    concluirTarefa(tarefa: Tarefa) {
+        tarefa.concluido = !tarefa.concluido;
+        this.subs.push(
+            this.tarefaService.atualizar(tarefa).subscribe(data => {
+                console.log('data', data);
+            }, err => {
+                console.log(err);
             })
-    );
-  }
+        );
+    }
 
-  ngOnDestroy() {
-    this.subs.forEach(item => item.unsubscribe());
-
-  }
-
-  /**
-   * Remove uma tarefa
-   * @param tarefa
-   */
-  async excluir(tarefa: Tarefa) {
-      const alert = new Alert();
-      alert.titulo = 'Excluir!';
-      alert.mensagem = 'Deseja excluir esta tarefa?';
-      alert.txtBtnConfirmar = 'Excluir';
-      alert.acaoBtnConfirmar = () => {
-          this.subs.push(
-              this.tarefaService.excluir(tarefa).subscribe(() => {
-                  this.buscarCategoriasTarefas();
-              }, error => {
-                  console.log(error);
-              })
-          );
-      };
-
-      await this.ntService.alertConfirm(alert);
-  }
-
-  /**
-   * Busca a lista com as categorias e as tarefas
-   * @private
-   */
-  private buscarCategoriasTarefas() {
-    this.subs.push(
-        this.categoriaService
-            .buscarTodasCategoriasTarefas()
-            .subscribe(categorias => this.categorias = categorias)
-    );
-  }
-
-  concluirTarefa(tarefa: Tarefa) {
-    tarefa.concluido = !tarefa.concluido;
-    this.subs.push(
-        this.tarefaService.atualizar(tarefa).subscribe(data => {
-          console.log('data', data);
-        }, err => {
-          console.log(err);
-        })
-    );
-  }
+    /**
+     * Busca a lista com as categorias e as tarefas
+     * @private
+     */
+    private buscarCategoriasTarefas() {
+        this.subs.push(
+            this.categoriaService
+                .buscarTodasCategoriasTarefas()
+                .subscribe(categorias => this.categorias = categorias)
+        );
+    }
 }

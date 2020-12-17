@@ -1,4 +1,4 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Tarefa} from '../../model/tarefa.model';
 import {api} from '../utils/global.constants';
 import {HttpClient} from '@angular/common/http';
@@ -9,7 +9,8 @@ import {Observable} from 'rxjs';
 })
 export class TarefaService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   /**
    * Atualiza os dados de uma tarefa
