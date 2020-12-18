@@ -1,7 +1,7 @@
 export class Alert {
-    titulo: string;
-    mensagem: string;
-    txtBtnConfirmar: string;
+    titulo = '';
+    mensagem = '';
+    txtBtnConfirmar = 'OK';
     acaoBtnConfirmar: () => void;
     txtBtnCancelar = 'Cancelar';
 }
