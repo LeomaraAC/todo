@@ -10,6 +10,7 @@ import {Categoria} from '../../model/categoria.model';
 import {EMPTY, of} from 'rxjs';
 
 import {Tarefa} from '../../model/tarefa.model';
+import {NotificationService} from '../../core/service/notification.service';
 
 describe('TarefaPage', () => {
   let component: TarefaPage;
@@ -18,14 +19,16 @@ describe('TarefaPage', () => {
   /** Mock */
   let tarefaServiceSpy: jasmine.SpyObj<TarefaService>;
   let categoriaServiceSpy: jasmine.SpyObj<CategoriaService>;
+  let ntServiceSpy: jasmine.SpyObj<NotificationService>;
 
   /** Dados fake */
-  let tarefasFake;
-  let categoriaFake;
+  let tarefasFake: Tarefa[];
+  let categoriaFake: Categoria[];
 
   beforeEach(async(() => {
     const tarefaSpy = jasmine.createSpyObj('tarefaService', ['excluir', 'atualizar']);
     const categoriaSpy = jasmine.createSpyObj('categoriaService', ['buscarTodasCategoriasTarefas']);
+    const ntSpy = jasmine.createSpyObj('NotificationService', ['alertConfirm', 'toast']);
 
     TestBed.configureTestingModule({
       declarations: [TarefaPage],
@@ -35,13 +38,15 @@ describe('TarefaPage', () => {
         )],
       providers: [
         {provide: TarefaService, useValue: tarefaSpy},
-        {provide: CategoriaService, useValue: categoriaSpy}
+        {provide: CategoriaService, useValue: categoriaSpy},
+        {provide: NotificationService, useValue: ntSpy}
       ]
     }).compileComponents();
 
     router = TestBed.inject(Router);
     tarefaServiceSpy = TestBed.inject(TarefaService) as jasmine.SpyObj<TarefaService>;
     categoriaServiceSpy = TestBed.inject(CategoriaService) as jasmine.SpyObj<CategoriaService>;
+    ntServiceSpy = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
 
     fixture = TestBed.createComponent(TarefaPage);
     component = fixture.componentInstance;
@@ -66,40 +71,27 @@ describe('TarefaPage', () => {
     expect(categoriaServiceSpy.buscarTodasCategoriasTarefas.calls.count()).toBe(1);
   });
 
-  // it('Deve exibir um alert ao clicar no botão de excluir', () => {
-  //   fixture.detectChanges();
-  //   const tarefa = tarefasFake[0];
-  //   const btnExcluir: HTMLElement = fixture.nativeElement.querySelector(`#excluir_${tarefa.id}`);
-  //   btnExcluir.click();
-  //   expect(alertSpy.create).toHaveBeenCalled();
-  // });
-  //
-  // it('Não deve possuir ação no botão de cancelar', fakeAsync(() => {
-  //   alertSpy.create.and.returnValue(notificationReturn);
-  //
-  //   component.excluir(tarefasFake[0]);
-  //   tick(); // Tempo necessário para chamar o método present do alert
-  //   const {buttons} = alertSpy.create.calls.first().args[0];
-  //   const cancelButton = buttons[0];
-  //
-  //   expect(_.has(cancelButton, 'handler')).toBeFalse();
-  //   expect(tarefaSpy.excluir).not.toHaveBeenCalled();
-  // }));
-  //
-  // xit('Deve remover o item ao confirmar o alert', fakeAsync(() => {
-  //   alertSpy.create.and.returnValue(notificationReturn);
-  //   tarefaSpy.excluir.and.returnValue(EMPTY);
-  //   const tarefa = tarefasFake[0];
-  //
-  //   component.excluir(tarefa);
-  //   tick(); // Tempo necessário para chamar o método present do alert
-  //   const {buttons} = alertSpy.create.calls.first().args[0];
-  //   const confirmButton = buttons[1];
-  //   confirmButton.handler();
-  //
-  //   expect(tarefaSpy.excluir).toHaveBeenCalledWith(tarefa);
-  //   expect(categoriaSpy.buscarTodasCategoriasTarefas).toHaveBeenCalled();
-  // }));
+  it('Deve exibir um alert ao clicar no botão de excluir', () => {
+    fixture.detectChanges();
+    const tarefa = tarefasFake[0];
+    const btnExcluir: HTMLElement = fixture.nativeElement.querySelector(`#excluir_${tarefa.id}`);
+    btnExcluir.click();
+    expect(ntServiceSpy.alertConfirm).toHaveBeenCalled();
+  });
+
+  it('Deve remover o item ao confirmar o alert', fakeAsync(() => {
+    const tarefa = tarefasFake[0];
+    ntServiceSpy.alertConfirm.and.returnValue(Promise.resolve());
+    tarefaServiceSpy.excluir.and.returnValue(of(tarefa.id));
+
+    component.excluir(tarefa);
+    const alert = ntServiceSpy.alertConfirm.calls.first().args[0];
+    alert.acaoBtnConfirmar();
+
+    expect(tarefaServiceSpy.excluir).toHaveBeenCalledWith(tarefa);
+    expect(categoriaServiceSpy.buscarTodasCategoriasTarefas).toHaveBeenCalled();
+    expect(categoriaServiceSpy.buscarTodasCategoriasTarefas.calls.count()).toEqual(2);
+  }));
 
 });
 
