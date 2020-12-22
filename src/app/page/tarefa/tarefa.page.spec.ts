@@ -12,6 +12,9 @@ import {EMPTY, of} from 'rxjs';
 import {Tarefa} from '../../model/tarefa.model';
 import {NotificationService} from '../../core/service/notification.service';
 
+const TAREFA_EXCLUIDA_SUCESSO = 'Tarefa excluida com sucesso';
+const COR_TOAST_SUCESSO = 'success';
+
 describe('TarefaPage', () => {
   let component: TarefaPage;
   let fixture: ComponentFixture<TarefaPage>;
@@ -87,11 +90,28 @@ describe('TarefaPage', () => {
     component.excluir(tarefa);
     const alert = ntServiceSpy.alertConfirm.calls.first().args[0];
     alert.acaoBtnConfirmar();
+    tick();
 
     expect(tarefaServiceSpy.excluir).toHaveBeenCalledWith(tarefa);
     expect(categoriaServiceSpy.buscarTodasCategoriasTarefas).toHaveBeenCalled();
     expect(categoriaServiceSpy.buscarTodasCategoriasTarefas.calls.count()).toEqual(2);
   }));
+
+  it('Deve exibir um toast ao excluir um item com sucesso', fakeAsync(() => {
+    const tarefa = tarefasFake[0];
+    ntServiceSpy.alertConfirm.and.returnValue(Promise.resolve());
+    ntServiceSpy.toast.and.returnValue(Promise.resolve());
+    tarefaServiceSpy.excluir.and.returnValue(of(tarefa.id));
+
+    component.excluir(tarefa);
+    const alert = ntServiceSpy.alertConfirm.calls.first().args[0];
+    alert.acaoBtnConfirmar();
+
+    expect(ntServiceSpy.toast).toHaveBeenCalledWith(TAREFA_EXCLUIDA_SUCESSO, COR_TOAST_SUCESSO);
+  }));
+
+  // todo - Deve exibir mensagem ao falhar a exclusão
+  // todo - Deve exibir loading ao excluir
 
 });
 

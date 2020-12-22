@@ -50,17 +50,20 @@ export class TarefaPage implements OnInit, OnDestroy {
         alert.titulo = 'Excluir!';
         alert.mensagem = 'Deseja excluir esta tarefa?';
         alert.txtBtnConfirmar = 'Excluir';
-        alert.acaoBtnConfirmar = () => {
-            this.subs.push(
-                this.tarefaService.excluir(tarefa).subscribe(() => {
-                    this.buscarCategoriasTarefas();
-                }, error => {
-                    console.log(error);
-                })
-            );
-        };
+        alert.acaoBtnConfirmar = () => this.confirmouExcluir(tarefa);
 
         await this.ntService.alertConfirm(alert);
+    }
+
+    private confirmouExcluir(tarefa) {
+        this.subs.push(
+            this.tarefaService.excluir(tarefa).subscribe(async () => {
+                await this.ntService.toast('Tarefa excluida com sucesso', 'success');
+                this.buscarCategoriasTarefas();
+            }, error => {
+                console.log(error);
+            })
+        );
     }
 
     concluirTarefa(tarefa: Tarefa) {
