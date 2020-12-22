@@ -60,7 +60,8 @@ export class TarefaPage implements OnInit, OnDestroy {
             this.tarefaService.excluir(tarefa).subscribe(async () => {
                 await this.ntService.toast('Tarefa excluida com sucesso', 'success');
                 this.buscarCategoriasTarefas();
-            }, error => {
+            }, async (error) => {
+                await this.ntService.toast('Ocorreu um erro ao excluir', 'danger');
                 console.log(error);
             })
         );

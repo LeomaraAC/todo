@@ -7,13 +7,15 @@ import {CategoriaService} from '../../core/service/categoria.service';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Categoria} from '../../model/categoria.model';
-import {EMPTY, of} from 'rxjs';
+import {EMPTY, of, throwError} from 'rxjs';
 
 import {Tarefa} from '../../model/tarefa.model';
 import {NotificationService} from '../../core/service/notification.service';
 
 const TAREFA_EXCLUIDA_SUCESSO = 'Tarefa excluida com sucesso';
+const ERRO_AO_EXCLUIR_TAREFA = 'Ocorreu um erro ao excluir';
 const COR_TOAST_SUCESSO = 'success';
+const COR_TOAST_ERRO = 'danger';
 
 describe('TarefaPage', () => {
   let component: TarefaPage;
@@ -110,7 +112,17 @@ describe('TarefaPage', () => {
     expect(ntServiceSpy.toast).toHaveBeenCalledWith(TAREFA_EXCLUIDA_SUCESSO, COR_TOAST_SUCESSO);
   }));
 
-  // todo - Deve exibir mensagem ao falhar a exclusão
+  it('Deve exibir mensagem ao ocorrer uma falha ao excluir ', () => {
+    ntServiceSpy.alertConfirm.and.returnValue(Promise.resolve());
+    ntServiceSpy.toast.and.returnValue(Promise.resolve());
+    tarefaServiceSpy.excluir.and.returnValue(throwError(ERRO_AO_EXCLUIR_TAREFA));
+
+    component.excluir(tarefasFake[0]);
+    const alert = ntServiceSpy.alertConfirm.calls.first().args[0];
+    alert.acaoBtnConfirmar();
+
+    expect(ntServiceSpy.toast).toHaveBeenCalledWith(ERRO_AO_EXCLUIR_TAREFA, COR_TOAST_ERRO);
+  });
   // todo - Deve exibir loading ao excluir
 
 });
